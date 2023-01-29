@@ -15,24 +15,12 @@ use winit::window::Icon;
 
 mod clipboard;
 
-pub const MIN_FONT_SIZE: i32 = 5;
+pub const MIN_FONT_SIZE: i32 = 8;
 pub const MAX_FONT_SIZE: i32 = 44;
 
 const SYSTEM_FONT_SIZE: f32 = 18.0;
 
 const DEFAULT_ALWAYS_ON_TOP: bool = true;
-
-fn load_icon(path: &Path) -> Icon {
-    let (icon_rgba, icon_width, icon_height) = {
-        let image = image::open(path)
-            .expect("Failed to open icon path")
-            .into_rgba8();
-        let (width, height) = image.dimensions();
-        let rgba = image.into_raw();
-        (rgba, width, height)
-    };
-    return Icon::from_rgba(icon_rgba, icon_width, icon_height).expect("Failed to open icon")
-}
 
 pub struct System {
     pub event_loop: EventLoop<()>,
@@ -96,9 +84,9 @@ pub fn init(title: &str) -> Mod {
         let gl_window = display.gl_window();
         let window = gl_window.window();
 
-        let dpi_mode = if let Ok(factor) = std::env::var("IMGUI_EXAMPLE_FORCE_DPI_FACTOR") {
+        let dpi_mode = if let Ok(hidpi_factor) = std::env::var("IMGUI_EXAMPLE_FORCE_DPI_FACTOR") {
             // Allow forcing of HiDPI factor for debugging purposes
-            match factor.parse::<f64>() {
+            match hidpi_factor.parse::<f64>() {
                 Ok(f) => HiDpiMode::Locked(f),
                 Err(e) => panic!("Invalid scaling factor: {}", e),
             }
@@ -160,6 +148,66 @@ pub fn init(title: &str) -> Mod {
                     ..FontConfig::default()
                 }),
             },
+            FontSource::TtfData {
+                data: include_bytes!("../../resources/fonts/nanum2.ttf"),
+                size_pixels: font_size as f32,
+                config: Some(FontConfig {
+                    rasterizer_multiply: 1.5,
+                    oversample_h: 4,
+                    oversample_v: 4,
+                    // glyph_ranges: FontGlyphRanges::chinese_simplified_common(),
+
+                    ..FontConfig::default()
+                }),
+            },
+            FontSource::TtfData {
+                data: include_bytes!("../../resources/fonts/sc.ttf"),
+                size_pixels: font_size as f32,
+                config: Some(FontConfig {
+                    rasterizer_multiply: 1.5,
+                    oversample_h: 4,
+                    oversample_v: 4,
+                    // glyph_ranges: FontGlyphRanges::chinese_simplified_common(),
+
+                    ..FontConfig::default()
+                }),
+            },
+            FontSource::TtfData {
+                data: include_bytes!("../../resources/fonts/mplus-jp.ttf"),
+                size_pixels: font_size as f32,
+                config: Some(FontConfig {
+                    rasterizer_multiply: 1.5,
+                    oversample_h: 1,
+                    oversample_v: 1,
+                    glyph_ranges: FontGlyphRanges::japanese(),
+
+                    ..FontConfig::default()
+                }),
+            },
+
+            //
+            // FontSource::TtfData {
+            //     data: include_bytes!("../../resources/fonts/noto-sans-korean.otf"),
+            //     size_pixels: font_size as f32,
+            //     config: Some(FontConfig {
+            //         rasterizer_multiply: 1.5,
+            //         oversample_h: 4,
+            //         oversample_v: 4,
+            //         glyph_ranges: FontGlyphRanges::japanese(),
+            //         ..FontConfig::default()
+            //     }),
+            // },
+            // FontSource::TtfData {
+            //     data: include_bytes!("../../resources/fonts/noto-sans-korean.otf"),
+            //     size_pixels: font_size as f32,
+            //     config: Some(FontConfig {
+            //         rasterizer_multiply: 1.5,
+            //         oversample_h: 4,
+            //         oversample_v: 4,
+            //         glyph_ranges: FontGlyphRanges::chinese_full(),
+            //         ..FontConfig::default()
+            //     }),
+            // },
         ]);
         font_id_hash_map.insert(font_size, font_id);
     }
