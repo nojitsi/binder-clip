@@ -20,4 +20,5 @@ icon=["resources/images/clip.icns"]
 short_description = "An example application."
 version = "1.0.0"
 copyright = "Copyright (c) Jane Doe 2016. All rights reserved."
+identifier="dev.iliushchenko.binderclip"
 
