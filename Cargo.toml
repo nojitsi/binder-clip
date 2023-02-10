@@ -6,9 +6,9 @@ description = "An example application"
 
 [dependencies]
 winit = "0.27.5"
-imgui = "0.9.0"
-imgui-winit-support = "0.9.0"
-imgui-glium-renderer = "0.9.0"
+imgui = "0.10.0"
+imgui-winit-support = "0.10.0"
+imgui-glium-renderer = "0.10.0"
 glium = "0.32.1"
 clipboard = "0.5.0"
 textwrap = "0.16"

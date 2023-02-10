@@ -157,14 +157,17 @@ fn main() {
         let button_active_bg = ui.push_style_color(StyleColor::ButtonActive, HALF_GREEN);
         let text_selection_bg = ui.push_style_color(StyleColor::TextSelectedBg, HALF_GREEN_BTN_HOVER);
 
+        // ui.set_scroll_y(0.1);
+        // ui.set_scrol
+
         ui
             .window("main")
             // .draw_background(true)
             .size(ui.io().display_size, Condition::Always)
             .position([0.0, 0.0],Condition::FirstUseEver)
-            .scroll_bar(true)
+            .scroll_bar(false)
             // .always_auto_resize(true)
-            .always_use_window_padding(true)
+            // .always_use_window_padding(true)
             .resizable(false)
             .title_bar(false)
             .no_decoration()

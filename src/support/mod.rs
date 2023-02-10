@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-use std::path::Path;
 use glium::glutin;
 use glium::glutin::event::{Event, WindowEvent};
 use glium::glutin::event_loop::{ControlFlow, EventLoop};
@@ -11,11 +10,10 @@ use imgui_winit_support::{HiDpiMode, WinitPlatform};
 use std::time::Instant;
 use winit::dpi::PhysicalSize;
 use winit::platform::macos::WindowBuilderExtMacOS;
-use winit::window::Icon;
 
 mod clipboard;
 
-pub const MIN_FONT_SIZE: i32 = 8;
+pub const MIN_FONT_SIZE: i32 = 13;
 pub const MAX_FONT_SIZE: i32 = 44;
 
 const SYSTEM_FONT_SIZE: f32 = 18.0;
@@ -93,7 +91,6 @@ pub fn init(title: &str) -> Mod {
         } else {
             HiDpiMode::Default
         };
-
         platform.attach_window(imgui.io_mut(), window, dpi_mode);
     }
 
@@ -103,6 +100,9 @@ pub fn init(title: &str) -> Mod {
     // on two different screens, and thus we do not need to scale this
     // value (as the scaling is handled by winit)
     let font_size = SYSTEM_FONT_SIZE;
+
+
+    let hidpi_factor = platform.hidpi_factor().round();
 
     imgui.fonts().add_font(&[
         FontSource::TtfData {
@@ -148,43 +148,43 @@ pub fn init(title: &str) -> Mod {
                     ..FontConfig::default()
                 }),
             },
-            FontSource::TtfData {
-                data: include_bytes!("../../resources/fonts/nanum2.ttf"),
-                size_pixels: font_size as f32,
-                config: Some(FontConfig {
-                    rasterizer_multiply: 1.5,
-                    oversample_h: 4,
-                    oversample_v: 4,
-                    // glyph_ranges: FontGlyphRanges::chinese_simplified_common(),
+            // FontSource::TtfData {
+            //     data: include_bytes!("../../resources/fonts/mplus-1p-regular.ttf"),
+            //     size_pixels: font_size as f32,
+            //     config: Some(FontConfig {
+            //         rasterizer_multiply: 1.7,
+            //         oversample_h: 1,
+            //         oversample_v: 1,
+            //         glyph_ranges: FontGlyphRanges::japanese(),
+            //         pixel_snap_h: true,
+            //         ..FontConfig::default()
+            //     }),
+            // },
 
-                    ..FontConfig::default()
-                }),
-            },
-            FontSource::TtfData {
-                data: include_bytes!("../../resources/fonts/sc.ttf"),
-                size_pixels: font_size as f32,
-                config: Some(FontConfig {
-                    rasterizer_multiply: 1.5,
-                    oversample_h: 4,
-                    oversample_v: 4,
-                    // glyph_ranges: FontGlyphRanges::chinese_simplified_common(),
-
-                    ..FontConfig::default()
-                }),
-            },
-            FontSource::TtfData {
-                data: include_bytes!("../../resources/fonts/mplus-jp.ttf"),
-                size_pixels: font_size as f32,
-                config: Some(FontConfig {
-                    rasterizer_multiply: 1.5,
-                    oversample_h: 1,
-                    oversample_v: 1,
-                    glyph_ranges: FontGlyphRanges::japanese(),
-
-                    ..FontConfig::default()
-                }),
-            },
-
+            // FontSource::TtfData {
+            //     data: include_bytes!("../../resources/fonts/nanum2.ttf"),
+            //     size_pixels: font_size as f32,
+            //     config: Some(FontConfig {
+            //         rasterizer_multiply: 1.5,
+            //         oversample_h: 4,
+            //         oversample_v: 4,
+            //         // glyph_ranges: FontGlyphRanges::chinese_simplified_common(),
+            //
+            //         ..FontConfig::default()
+            //     }),
+            // },
+            // FontSource::TtfData {
+            //     data: include_bytes!("../../resources/fonts/sc.ttf"),
+            //     size_pixels: font_size as f32,
+            //     config: Some(FontConfig {
+            //         rasterizer_multiply: 1.5,
+            //         oversample_h: 4,
+            //         oversample_v: 4,
+            //         // glyph_ranges: FontGlyphRanges::chinese_simplified_common(),
+            //
+            //         ..FontConfig::default()
+            //     }),
+            // },
             //
             // FontSource::TtfData {
             //     data: include_bytes!("../../resources/fonts/noto-sans-korean.otf"),
@@ -228,6 +228,15 @@ pub fn init(title: &str) -> Mod {
     }
 }
 
+fn sleep (count: &mut i32) {
+    if *count > 10 {
+
+        *count = 0;
+    } else {
+        *count += 1;
+    }
+}
+
 impl System {
     pub fn main_loop<F: FnMut(&mut bool, &mut Ui) -> WindowProps + 'static>(self, mut run_ui: F) {
         let System {
@@ -240,7 +249,36 @@ impl System {
         } = self;
         let mut last_frame = Instant::now();
 
+        let pos = 0;
+        let mut count = 0;
+
         event_loop.run(move |event, _, control_flow| match event {
+            // Event::DeviceEvent {
+            //     device_id,
+            //     event: wheel_event @ winit::event::DeviceEvent::MouseWheel { .. },
+            // } => {
+            //     println!("Device({device_id:?}):{wheel_event:?}");
+            //
+            //     // window
+            //     //
+            //     // SetWindowScrollY(
+            //     //     scroll_window, 1.0
+            //     // );
+            //
+            //     // std::thread::sleep(std::time::Duration::from_millis(50));
+            //
+            //     // sleep(&mut count);
+            // }
+
+            // Event::WindowEvent {
+            //     window_id,
+            //     event: wheel_event @ WindowEvent::MouseWheel { .. },
+            // } => {
+            //     // let ui = imgui.frame();
+            //
+            //     println!("Window({window_id:?}):{wheel_event:?}");
+            // }
+
             Event::NewEvents(_) => {
                 let now = Instant::now();
                 imgui.io_mut().update_delta_time(now - last_frame);
@@ -256,7 +294,10 @@ impl System {
             Event::RedrawRequested(_) => {
                 let ui = imgui.frame();
                 let gl_window = display.gl_window();
-                let mut winit_window = gl_window.window();
+                let winit_window = gl_window.window();
+
+                // ui.set_scroll_y(5.0);
+                // setSc
 
                 // if ui.is_any_item_focused() {
                 //     println!("item in focus")
@@ -286,8 +327,6 @@ impl System {
                 if !run {
                     *control_flow = ControlFlow::Exit;
                 }
-
-
 
                 let mut target = display.draw();
 
