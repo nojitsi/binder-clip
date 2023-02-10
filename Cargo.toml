@@ -17,8 +17,8 @@ image = "0.24.5"
 [package.metadata.bundle]
 name="Binder Clip"
 icon=["resources/images/clip.icns"]
-short_description = "An example application."
+short_description = "An cheatsheet application, that allows you to pin your text over presentation."
 version = "1.0.0"
-copyright = "Copyright (c) Jane Doe 2016. All rights reserved."
+copyright = "Copyright (c) Yehor Iliushchenko 2023. All rights reserved."
 identifier="dev.iliushchenko.binderclip"
 
