@@ -16,9 +16,13 @@ image = "0.24.5"
 
 [package.metadata.bundle]
 name="Binder Clip"
-icon=["resources/images/clip.icns"]
-short_description = "An cheatsheet application, that allows you to pin your text over presentation."
+icon=["resources/images/512x512.icns", "resources/images/512x512@2x.icns"]
+short_description = "A cheatsheet application, that allows you to pin your text over a presentation."
+long_description = """
+The application, allows you to paste your text and pin window over a presentation or videocall. It's an simple, but efficient way to keep your note in front of you while capturing the display.
+"""
+category = "Utilities"
 version = "1.0.0"
 copyright = "Copyright (c) Yehor Iliushchenko 2023. All rights reserved."
 identifier="dev.iliushchenko.binderclip"
-
+osx_minimum_system_version="12.0"
